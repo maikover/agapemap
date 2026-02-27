@@ -1,0 +1,195 @@
+{
+  "@@locale": "es",
+  "appTitle": "AgapeMap",
+  "@appTitle": {
+    "description": "El título de la aplicación"
+  },
+  "subtitle": "Tu palabra diaria",
+  "@subtitle": {
+    "description": "Subtítulo de la app"
+  },
+  "start": "Comenzar",
+  "@start": {
+    "description": "Botón para comenzar"
+  },
+  "viewDiary": "Ver mi diario",
+  "@viewDiary": {
+    "description": "Botón para ver el diario"
+  },
+  "howIsYourHeart": "¿Cómo está tu corazón hoy?",
+  "@howIsYourHeart": {
+    "description": "Título de selección de emoción"
+  },
+  "receiveMyWord": "Recibir mi palabra",
+  "@receiveMyWord": {
+    "description": "Botón para recibir versículos"
+  },
+  "next": "Otro",
+  "@next": {
+    "description": "Label para siguiente versículo"
+  },
+  "amen": "Amén",
+  "@amen": {
+    "description": "Label para guardar versículo"
+  },
+  "noVersesAvailable": "No hay versículos disponibles",
+  "@noVersesAvailable": {
+    "description": "Mensaje cuando no hay versículos"
+  },
+  "youReceivedYourWord": "¡Has recibido tu palabra!",
+  "@youReceivedYourWord": {
+    "description": "Título del diálogo de completion"
+  },
+  "thanksForReceiving": "Gracias por recibir hoy la palabra de Dios.",
+  "@thanksForReceiving": {
+    "description": "Mensaje de agradecimiento"
+  },
+  "backToHome": "Volver al inicio",
+  "@backToHome": {
+    "description": "Botón para volver al inicio"
+  },
+  "diary": "Diario",
+  "@diary": {
+    "description": "Título del diario"
+  },
+  "comingSoon": "Próximamente",
+  "@comingSoon": {
+    "description": "Mensaje de coming soon"
+  },
+  "peace": "Paz",
+  "@peace": {
+    "description": "Emoción: Paz"
+  },
+  "peaceDescription": "Busca la paz del Espíritu Santo",
+  "@peaceDescription": {
+    "description": "Descripción de paz"
+  },
+  "redemption": "Redención",
+  "@redemption": {
+    "description": "Emoción: Redención"
+  },
+  "redemptionDescription": "Libertad de ansiedad y preocupación",
+  "@redemptionDescription": {
+    "description": "Descripción de redención"
+  },
+  "strength": "Fortaleza",
+  "@strength": {
+    "description": "Emoción: Fortaleza"
+  },
+  "strengthDescription": "Busca fuerza y gloria",
+  "@strengthDescription": {
+    "description": "Descripción de fortaleza"
+  },
+  "renewal": "Renovación",
+  "@renewal": {
+    "description": "Emoción: Renovación"
+  },
+  "renewalDescription": "Crecimiento espiritual",
+  "@renewalDescription": {
+    "description": "Descripción de renovación"
+  },
+  "wisdom": "Sabiduría",
+  "@wisdom": {
+    "description": "Emoción: Sabiduría"
+  },
+  "wisdomDescription": "Guía divina para decisiones",
+  "@wisdomDescription": {
+    "description": "Descripción de sabiduría"
+  },
+  "holiness": "Santidad",
+  "@holiness": {
+    "description": "Emoción: Santidad"
+  },
+  "holinessDescription": "Limpieza y paz interior",
+  "@holinessDescription": {
+    "description": "Descripción de santidad"
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Título de error genérico"
+  },
+  "networkError": "Error de conexión. Intenta de nuevo.",
+  "@networkError": {
+    "description": "Mensaje de error de red"
+  },
+  "verseSaved": "Versículo guardado",
+  "@verseSaved": {
+    "description": "Mensaje cuando se guarda un versículo"
+  },
+  "deleteConfirmation": "¿Eliminar esta entrada?",
+  "@deleteConfirmation": {
+    "description": "Confirmar eliminación"
+  },
+  "delete": "Eliminar",
+  "@delete": {
+    "description": "Botón eliminar"
+  },
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Botón cancelar"
+  },
+  "emptyDiary": "Tu diario está vacío",
+  "@emptyDiary": {
+    "description": "Diario vacío"
+  },
+  "emptyDiaryHint": "Guarda versículos con Amén para verlos aquí",
+  "@emptyDiaryHint": {
+    "description": "Hint para diario vacío"
+  },
+  "blessingsMap": "Mapa de Bendiciones",
+  "@blessingsMap": {
+    "description": "Título del mapa"
+  },
+  "locationPermissionRequired": "Se requiere permiso de ubicación",
+  "@locationPermissionRequired": {
+    "description": "Permiso requerido"
+  },
+  "locationPermissionHint": "Para ver oraciones cerca de ti",
+  "@locationPermissionHint": {
+    "description": "Hint de permiso"
+  },
+  "enableLocation": "Habilitar ubicación",
+  "@enableLocation": {
+    "description": "Botón habilitar"
+  },
+  "noPrayersNearby": "No hay oraciones cercanas",
+  "@noPrayersNearby": {
+    "description": "Sin oraciones"
+  },
+  "plantPrayerHint": "Planta una oración en este lugar",
+  "@plantPrayerHint": {
+    "description": "Hint para plantar"
+  },
+  "plantPrayer": "Plantar Oración",
+  "@plantPrayer": {
+    "description": "Título de plantar"
+  },
+  "selectEmotion": "Selecciona una emoción",
+  "@selectEmotion": {
+    "description": "Selector de emoción"
+  },
+  "verseReferenceOptional": "Versículo (opcional)",
+  "@verseReferenceOptional": {
+    "description": "Versículo opcional"
+  },
+  "yourPrayer": "Tu oración",
+  "@yourPrayer": {
+    "description": "Input de oración"
+  },
+  "prayerHint": "Escribe una oración de esperanza...",
+  "@prayerHint": {
+    "description": "Hint de oración"
+  },
+  "locationRequired": "Se requiere tu ubicación",
+  "@locationRequired": {
+    "description": "Ubicación requerida"
+  },
+  "plant": "Plantar",
+  "@plant": {
+    "description": "Botón plantar"
+  },
+  "share": "Compartir",
+  "@share": {
+    "description": "Botón compartir"
+  }
+}
