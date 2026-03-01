@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../domain/entities/verse.dart';
 import '../../domain/entities/emotion.dart';
@@ -53,7 +54,7 @@ $brandingText
     required String appName,
   }) async {
     final buffer = StringBuffer();
-    
+
     if (verseReference != null) {
       buffer.writeln(verseReference);
       if (verseText != null) {
@@ -61,7 +62,7 @@ $brandingText
       }
       buffer.writeln();
     }
-    
+
     buffer.writeln(prayerText);
     buffer.writeln();
     buffer.writeln('Compartido desde $appName 🙏');
@@ -151,13 +152,13 @@ class ShareOptionsSheet extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ...options.map((option) => ListTile(
-            leading: Icon(option.icon, color: option.color),
-            title: Text(option.label),
-            onTap: () {
-              Navigator.pop(context);
-              option.onTap();
-            },
-          )),
+                leading: Icon(option.icon, color: option.color),
+                title: Text(option.label),
+                onTap: () {
+                  Navigator.pop(context);
+                  option.onTap();
+                },
+              )),
         ],
       ),
     );

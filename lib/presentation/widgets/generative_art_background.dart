@@ -1,13 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-/// Tipos de patrones de arte generativo
-enum ArtPattern {
-  mandala,
-  waves,
-  spiral,
-  particles,
-}
+import '../../core/constants/art_pattern.dart';
 
 /// Widget de fondo con arte generativo animado
 class GenerativeArtBackground extends StatefulWidget {
@@ -25,7 +19,8 @@ class GenerativeArtBackground extends StatefulWidget {
   });
 
   @override
-  State<GenerativeArtBackground> createState() => _GenerativeArtBackgroundState();
+  State<GenerativeArtBackground> createState() =>
+      _GenerativeArtBackgroundState();
 }
 
 class _GenerativeArtBackgroundState extends State<GenerativeArtBackground>
@@ -36,7 +31,8 @@ class _GenerativeArtBackgroundState extends State<GenerativeArtBackground>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: Duration(milliseconds: (widget.animationDuration * 1000).toInt()),
+      duration:
+          Duration(milliseconds: (widget.animationDuration * 1000).toInt()),
       vsync: this,
     )..repeat();
   }
@@ -114,14 +110,15 @@ class GenerativeArtPainter extends CustomPainter {
         ..style = PaintingStyle.fill;
 
       for (int i = 0; i < petalCount; i++) {
-        final angle = (i / petalCount) * 2 * math.pi + animationValue * 2 * math.pi;
+        final angle =
+            (i / petalCount) * 2 * math.pi + animationValue * 2 * math.pi;
         final x = center.dx + radius * math.cos(angle);
         final y = center.dy + radius * math.sin(angle);
 
         // Dibujar pétalo
         final path = Path();
         final petalSize = maxRadius * 0.12;
-        
+
         path.moveTo(x, y);
         path.quadraticBezierTo(
           x + petalSize * math.cos(angle + 0.3),
@@ -135,7 +132,7 @@ class GenerativeArtPainter extends CustomPainter {
           x,
           y,
         );
-        
+
         canvas.drawPath(path, paint);
       }
     }
@@ -146,23 +143,22 @@ class GenerativeArtPainter extends CustomPainter {
         ..color = baseColor.withOpacity(0.05)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1;
-      
+
       canvas.drawCircle(center, maxRadius * i * 0.2, circlePaint);
     }
   }
 
   void _drawWaves(Canvas canvas, Size size) {
     final waveCount = 8;
-    
+
     for (int i = 0; i < waveCount; i++) {
       final yOffset = size.height * (i / waveCount);
       final amplitude = size.height * 0.05 + i * 5;
       final frequency = 0.02 + i * 0.005;
       final phaseShift = animationValue * 2 * math.pi;
-      
-      final waveColor = HSLColor.fromColor(baseColor)
-          .withLightness(0.2 + i * 0.08)
-          .toColor();
+
+      final waveColor =
+          HSLColor.fromColor(baseColor).withLightness(0.2 + i * 0.08).toColor();
 
       final paint = Paint()
         ..color = waveColor.withOpacity(0.1)
@@ -173,7 +169,7 @@ class GenerativeArtPainter extends CustomPainter {
       path.moveTo(0, yOffset);
 
       for (double x = 0; x <= size.width; x += 5) {
-        final y = yOffset + 
+        final y = yOffset +
             math.sin(x * frequency + phaseShift + i) * amplitude +
             math.sin(x * frequency * 2 + phaseShift) * amplitude * 0.5;
         path.lineTo(x, y);
@@ -189,19 +185,19 @@ class GenerativeArtPainter extends CustomPainter {
 
     for (int arm = 0; arm < spiralArms; arm++) {
       final armAngle = arm * 2 * math.pi / spiralArms;
-      
+
       final paint = Paint()
         ..color = baseColor.withOpacity(0.15)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2;
 
       final path = Path();
-      
+
       for (int i = 0; i < pointsPerArm; i++) {
         final t = i / pointsPerArm;
         final angle = armAngle + t * 4 * math.pi + animationValue * 2 * math.pi;
         final radius = t * maxRadius;
-        
+
         final x = center.dx + radius * math.cos(angle);
         final y = center.dy + radius * math.sin(angle);
 
@@ -237,14 +233,14 @@ class GenerativeArtPainter extends CustomPainter {
     for (int i = 0; i < particleCount; i++) {
       final baseX = random.nextDouble() * size.width;
       final baseY = random.nextDouble() * size.height;
-      
+
       // Movimiento oscilante
       final offsetX = math.sin(animationValue * 2 * math.pi + i) * 30;
       final offsetY = math.cos(animationValue * 2 * math.pi + i * 1.5) * 30;
-      
+
       final x = (baseX + offsetX) % size.width;
       final y = (baseY + offsetY) % size.height;
-      
+
       final particleSize = 2 + random.nextDouble() * 4;
       final opacity = 0.05 + random.nextDouble() * 0.15;
 
@@ -266,17 +262,26 @@ class GenerativeArtPainter extends CustomPainter {
       ..strokeWidth = 0.5;
 
     for (int i = 0; i < particleCount; i++) {
-      final x1 = (random.nextDouble() * size.width + math.sin(animationValue * 2 * math.pi + i) * 30) % size.width;
-      final y1 = (random.nextDouble() * size.height + math.cos(animationValue * 2 * math.pi + i) * 30) % size.height;
+      final x1 = (random.nextDouble() * size.width +
+              math.sin(animationValue * 2 * math.pi + i) * 30) %
+          size.width;
+      final y1 = (random.nextDouble() * size.height +
+              math.cos(animationValue * 2 * math.pi + i) * 30) %
+          size.height;
 
       for (int j = i + 1; j < particleCount; j++) {
-        final x2 = (random.nextDouble() * size.width + math.sin(animationValue * 2 * math.pi + j) * 30) % size.width;
-        final y2 = (random.nextDouble() * size.height + math.cos(animationValue * 2 * math.pi + j) * 30) % size.height;
+        final x2 = (random.nextDouble() * size.width +
+                math.sin(animationValue * 2 * math.pi + j) * 30) %
+            size.width;
+        final y2 = (random.nextDouble() * size.height +
+                math.cos(animationValue * 2 * math.pi + j) * 30) %
+            size.height;
 
         final distance = math.sqrt(math.pow(x2 - x1, 2) + math.pow(y2 - y1, 2));
-        
+
         if (distance < 80) {
-          connectionPaint.color = baseColor.withOpacity(0.02 * (1 - distance / 80));
+          connectionPaint.color =
+              baseColor.withOpacity(0.02 * (1 - distance / 80));
           canvas.drawLine(Offset(x1, y1), Offset(x2, y2), connectionPaint);
         }
       }

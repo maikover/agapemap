@@ -1,0 +1,250 @@
+Compiling lib\main.dart for the Web...                          
+Unexpected wasm dry run failure (255):
+
+Unhandled exception:
+Unsupported operation: Cannot extract a file path from a org-dartlang-untranslatable-uri URI
+#0      _Uri.toFilePath (dart:core/uri.dart:3433)
+#1      DryRunSummarizer._lintChecks (package:dart2wasm/dry_run.dart:150)
+#2      DryRunSummarizer.summarize (package:dart2wasm/dry_run.dart:221)
+#3      compileToModule (package:dart2wasm/compile.dart:224)
+<asynchronous suspension>
+#4      generateWasm (package:dart2wasm/generate_wasm.dart:81)
+<asynchronous suspension>
+#5      main (file:///C:/b/s/w/ir/x/w/sdk/pkg/dart2wasm/bin/dart2wasm.dart:10)
+<asynchronous suspension>
+
+Use --no-wasm-dry-run to disable these warnings.
+Target dart2js failed: ProcessException: Process exited abnormally with exit code 1:
+Error: Couldn't resolve the package 'flutter_gen' in 'package:flutter_gen/gen_l10n/app_localizations.dart'.
+lib/main.dart:4:8:
+Error: Not found: 'package:flutter_gen/gen_l10n/app_localizations.dart'
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+       ^
+lib/presentation/pages/home_screen.dart:2:8:
+Error: Not found: 'package:flutter_gen/gen_l10n/app_localizations.dart'
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+       ^
+lib/core/utils/l10n_helper.dart:2:8:
+Error: Not found: 'package:flutter_gen/gen_l10n/app_localizations.dart'
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+       ^
+lib/presentation/pages/emotion_selection_screen.dart:2:8:
+Error: Not found: 'package:flutter_gen/gen_l10n/app_localizations.dart'
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+       ^
+lib/presentation/pages/diary_screen.dart:2:8:
+Error: Not found: 'package:flutter_gen/gen_l10n/app_localizations.dart'
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+       ^
+lib/presentation/pages/map_screen.dart:2:8:
+Error: Not found: 'package:flutter_gen/gen_l10n/app_localizations.dart'
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+       ^
+lib/domain/entities/emotion.dart:3:8:
+Error: Not found: 'package:flutter_gen/gen_l10n/app_localizations.dart'
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+       ^
+lib/presentation/pages/verse_swipe_screen.dart:3:8:
+Error: Not found: 'package:flutter_gen/gen_l10n/app_localizations.dart'
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+       ^
+lib/core/utils/l10n_helper.dart:6:10:
+Error: Type 'AppLocalizations' not found.
+  static AppLocalizations of(BuildContext context) {
+         ^^^^^^^^^^^^^^^^
+lib/core/utils/l10n_helper.dart:23:3:
+Error: Type 'AppLocalizations' not found.
+  AppLocalizations get l10n => L10n.of(this);
+  ^^^^^^^^^^^^^^^^
+lib/presentation/pages/diary_screen.dart:103:27:
+Error: Type 'AppLocalizations' not found.
+  Widget _buildEmptyState(AppLocalizations l10n) {
+                          ^^^^^^^^^^^^^^^^
+lib/presentation/pages/diary_screen.dart:135:26:
+Error: Type 'AppLocalizations' not found.
+  Widget _buildDiaryList(AppLocalizations l10n) {
+                         ^^^^^^^^^^^^^^^^
+lib/presentation/pages/map_screen.dart:121:24:
+Error: Type 'AppLocalizations' not found.
+  Widget _buildContent(AppLocalizations l10n) {
+                       ^^^^^^^^^^^^^^^^
+lib/presentation/pages/map_screen.dart:174:27:
+Error: Type 'AppLocalizations' not found.
+  Widget _buildEmptyState(AppLocalizations l10n) {
+                          ^^^^^^^^^^^^^^^^
+lib/presentation/pages/map_screen.dart:210:27:
+Error: Type 'AppLocalizations' not found.
+  Widget _buildPrayerList(AppLocalizations l10n) {
+                          ^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:9:25:
+Error: Type 'AppLocalizations' not found.
+  final String Function(AppLocalizations) name;
+                        ^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:10:25:
+Error: Type 'AppLocalizations' not found.
+  final String Function(AppLocalizations) description;
+                        ^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:27:18:
+Error: Type 'AppLocalizations' not found.
+  String getName(AppLocalizations l10n) => name(l10n);
+                 ^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:30:25:
+Error: Type 'AppLocalizations' not found.
+  String getDescription(AppLocalizations l10n) => description(l10n);
+                        ^^^^^^^^^^^^^^^^
+lib/presentation/pages/verse_swipe_screen.dart:186:39:
+Error: Type 'AppLocalizations' not found.
+  Widget _buildVerseCard(Verse verse, AppLocalizations l10n) {
+                                      ^^^^^^^^^^^^^^^^
+lib/main.dart:63:9:
+Error: Not a constant expression.
+        AppLocalizations.delegate,
+        ^^^^^^^^^^^^^^^^
+lib/core/utils/l10n_helper.dart:7:12:
+Error: Undefined name 'AppLocalizations'.
+    return AppLocalizations.of(context)!;
+           ^^^^^^^^^^^^^^^^
+lib/presentation/pages/diary_screen.dart:103:27:
+Error: 'AppLocalizations' isn't a type.
+  Widget _buildEmptyState(AppLocalizations l10n) {
+                          ^^^^^^^^^^^^^^^^
+lib/presentation/pages/diary_screen.dart:135:26:
+Error: 'AppLocalizations' isn't a type.
+  Widget _buildDiaryList(AppLocalizations l10n) {
+                         ^^^^^^^^^^^^^^^^
+lib/presentation/pages/map_screen.dart:121:24:
+Error: 'AppLocalizations' isn't a type.
+  Widget _buildContent(AppLocalizations l10n) {
+                       ^^^^^^^^^^^^^^^^
+lib/presentation/pages/map_screen.dart:174:27:
+Error: 'AppLocalizations' isn't a type.
+  Widget _buildEmptyState(AppLocalizations l10n) {
+                          ^^^^^^^^^^^^^^^^
+lib/presentation/pages/map_screen.dart:210:27:
+Error: 'AppLocalizations' isn't a type.
+  Widget _buildPrayerList(AppLocalizations l10n) {
+                          ^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:9:25:
+Error: 'AppLocalizations' isn't a type.
+  final String Function(AppLocalizations) name;
+                        ^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:10:25:
+Error: 'AppLocalizations' isn't a type.
+  final String Function(AppLocalizations) description;
+                        ^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:27:18:
+Error: 'AppLocalizations' isn't a type.
+  String getName(AppLocalizations l10n) => name(l10n);
+                 ^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:30:25:
+Error: 'AppLocalizations' isn't a type.
+  String getDescription(AppLocalizations l10n) => description(l10n);
+                        ^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:41:28:
+Error: The getter 'peace' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+      name: (l10n) => l10n.peace,
+                           ^^^^^
+lib/domain/entities/emotion.dart:42:35:
+Error: The getter 'peaceDescription' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+      description: (l10n) => l10n.peaceDescription,
+                                  ^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:50:28:
+Error: The getter 'redemption' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+      name: (l10n) => l10n.redemption,
+                           ^^^^^^^^^^
+lib/domain/entities/emotion.dart:51:35:
+Error: The getter 'redemptionDescription' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+      description: (l10n) => l10n.redemptionDescription,
+                                  ^^^^^^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:59:28:
+Error: The getter 'strength' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+      name: (l10n) => l10n.strength,
+                           ^^^^^^^^
+lib/domain/entities/emotion.dart:60:35:
+Error: The getter 'strengthDescription' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+      description: (l10n) => l10n.strengthDescription,
+                                  ^^^^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:68:28:
+Error: The getter 'renewal' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+      name: (l10n) => l10n.renewal,
+                           ^^^^^^^
+lib/domain/entities/emotion.dart:69:35:
+Error: The getter 'renewalDescription' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+      description: (l10n) => l10n.renewalDescription,
+                                  ^^^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:77:28:
+Error: The getter 'wisdom' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+      name: (l10n) => l10n.wisdom,
+                           ^^^^^^
+lib/domain/entities/emotion.dart:78:35:
+Error: The getter 'wisdomDescription' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+      description: (l10n) => l10n.wisdomDescription,
+                                  ^^^^^^^^^^^^^^^^^
+lib/domain/entities/emotion.dart:86:28:
+Error: The getter 'holiness' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+      name: (l10n) => l10n.holiness,
+                           ^^^^^^^^
+lib/domain/entities/emotion.dart:87:35:
+Error: The getter 'holinessDescription' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+      description: (l10n) => l10n.holinessDescription,
+                                  ^^^^^^^^^^^^^^^^^^^
+lib/presentation/pages/verse_swipe_screen.dart:186:39:
+Error: 'AppLocalizations' isn't a type.
+  Widget _buildVerseCard(Verse verse, AppLocalizations l10n) {
+                                      ^^^^^^^^^^^^^^^^
+Error: Compilation failed.
+  Command: C:\Users\maima\flutter\bin\cache\dart-sdk\bin\dart.exe compile js --platform-binaries=C:\Users\maima\flutter\bin\cache\flutter_web_sdk\kernel --invoker=flutter_tool -Ddart.vm.product=true -DFLUTTER_VERSION=3.38.9 -DFLUTTER_CHANNEL=stable -DFLUTTER_GIT_URL=https://github.com/flutter/flutter.git -DFLUTTER_FRAMEWORK_REVISION=67323de285 -DFLUTTER_ENGINE_REVISION=587c18f873 -DFLUTTER_DART_VERSION=3.10.8 -DFLUTTER_WEB_USE_SKIA=true -DFLUTTER_WEB_USE_SKWASM=false -DFLUTTER_WEB_CANVASKIT_URL=https://www.gstatic.com/flutter-canvaskit/587c18f873b8ab57330422bce09047420d9c7f42/ --native-null-assertions --no-source-maps -O4 --minify -o C:\Users\maima\Downloads\Desarrollo\agapemap\.dart_tool\flutter_build\6d7d900e962dcafee17de3bdcdfe413d\app.dill --packages=C:\Users\maima\Downloads\Desarrollo\agapemap\.dart_tool\package_config.json --cfe-only C:\Users\maima\Downloads\Desarrollo\agapemap\.dart_tool\flutter_build\6d7d900e962dcafee17de3bdcdfe413d\main.dart
+#0      RunResult.throwException (package:flutter_tools/src/base/process.dart:153:5)
+#1      _DefaultProcessUtils.run (package:flutter_tools/src/base/process.dart:379:19)
+<asynchronous suspension>
+#2      Dart2JSTarget.build (package:flutter_tools/src/build_system/targets/web.dart:207:5)
+<asynchronous suspension>
+#3      _BuildInstance._invokeInternal (package:flutter_tools/src/build_system/build_system.dart:895:9)
+<asynchronous suspension>
+#4      Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+<asynchronous suspension>
+#5      _BuildInstance.invokeTarget (package:flutter_tools/src/build_system/build_system.dart:833:32)
+<asynchronous suspension>
+#6      Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+<asynchronous suspension>
+#7      _BuildInstance.invokeTarget (package:flutter_tools/src/build_system/build_system.dart:833:32)
+<asynchronous suspension>
+#8      FlutterBuildSystem.build (package:flutter_tools/src/build_system/build_system.dart:653:16)
+<asynchronous suspension>
+#9      WebBuilder.buildWeb (package:flutter_tools/src/web/compile.dart:94:34)
+<asynchronous suspension>
+#10     BuildWebCommand.runCommand (package:flutter_tools/src/commands/build_web.dart:296:5)
+<asynchronous suspension>
+#11     FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1559:27)
+<asynchronous suspension>
+#12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#13     CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#14     FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:487:9)
+<asynchronous suspension>
+#15     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#16     FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:422:5)
+<asynchronous suspension>
+#17     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+<asynchronous suspension>
+#18     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#19     main (package:flutter_tools/executable.dart:103:3)
+<asynchronous suspension>
+
+Compiling lib\main.dart for the Web...                             16.2s
+Error: Failed to compile application for the Web.
