@@ -7,16 +7,17 @@ import 'core/utils/locale_service.dart';
 import 'config/injection.dart';
 import 'presentation/pages/splash_screen.dart';
 import 'presentation/pages/home_screen.dart';
+import 'presentation/pages/main_layout.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Configurar orientación
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  
+
   // Configurar System UI
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -24,10 +25,10 @@ void main() async {
       statusBarIconBrightness: Brightness.light,
     ),
   );
-  
+
   // Inicializar dependencias
   await initDependencies();
-  
+
   runApp(const AgapeMapApp());
 }
 
@@ -40,14 +41,14 @@ class AgapeMapApp extends StatefulWidget {
 
 class _AgapeMapAppState extends State<AgapeMapApp> {
   Locale _locale = const Locale('es');
-  
+
   void _changeLanguage(Locale locale) {
     if (!LocaleService.isSupported(locale)) return;
-    
+
     setState(() {
       _locale = locale;
     });
-    
+
     // Actualizar traducción en la API
     setAppLanguage(locale.languageCode);
   }
@@ -68,7 +69,7 @@ class _AgapeMapAppState extends State<AgapeMapApp> {
       supportedLocales: LocaleService.supportedLocales,
       home: const SplashScreen(),
       routes: {
-        '/home': (context) => const HomeScreen(),
+        '/home': (context) => const MainLayout(),
       },
     );
   }

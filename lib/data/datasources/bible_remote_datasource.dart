@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../models/verse_model.dart';
 import '../../core/constants/api_constants.dart';
@@ -7,9 +8,9 @@ import '../../core/constants/api_constants.dart';
 class BibleApiException implements Exception {
   final String message;
   final int? statusCode;
-  
+
   BibleApiException(this.message, {this.statusCode});
-  
+
   @override
   String toString() => 'BibleApiException: $message';
 }
@@ -18,33 +19,40 @@ class BibleApiException implements Exception {
 class BibleRemoteDataSource {
   final http.Client client;
   String _currentTranslation = BibleTranslations.getTranslation('es');
-  
-  BibleRemoteDataSource({http.Client? client}) : client = client ?? http.Client();
-  
+
+  BibleRemoteDataSource({http.Client? client})
+      : client = client ?? http.Client();
+
   /// Establecer traducción actual
   void setTranslation(String languageCode) {
     _currentTranslation = BibleTranslations.getTranslation(languageCode);
   }
-  
+
   /// Obtener traducción actual
   String get currentTranslation => _currentTranslation;
-  
+
   /// Obtener un versículo específico
   Future<VerseModel> getVerse(String reference) async {
-    final url = Uri.parse(
-      '${ApiConstants.bibleApiBaseUrl}/$reference?translation=$_currentTranslation'
-    );
-    
+    String urlString =
+        '${ApiConstants.bibleApiBaseUrl}/$reference?translation=$_currentTranslation';
+
+    // Bypass CORS for Web using a free proxy
+    if (kIsWeb) {
+      urlString = 'https://corsproxy.io/?${Uri.encodeComponent(urlString)}';
+    }
+
+    final url = Uri.parse(urlString);
+
     try {
       final response = await client.get(url);
-      
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        
+
         if (json['error'] != null) {
           throw BibleApiException(json['error']);
         }
-        
+
         return VerseModel.fromJson(json);
       } else {
         throw BibleApiException(
@@ -57,23 +65,28 @@ class BibleRemoteDataSource {
       throw BibleApiException('Network error: $e');
     }
   }
-  
+
   /// Obtener múltiples versículos
   Future<List<VerseModel>> getVerses(String references) async {
-    final url = Uri.parse(
-      '${ApiConstants.bibleApiBaseUrl}/$references?translation=$_currentTranslation'
-    );
-    
+    String urlString =
+        '${ApiConstants.bibleApiBaseUrl}/$references?translation=$_currentTranslation';
+
+    if (kIsWeb) {
+      urlString = 'https://corsproxy.io/?${Uri.encodeComponent(urlString)}';
+    }
+
+    final url = Uri.parse(urlString);
+
     try {
       final response = await client.get(url);
-      
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        
+
         if (json['error'] != null) {
           throw BibleApiException(json['error']);
         }
-        
+
         final verses = json['verses'] as List;
         return verses.map((v) => VerseModel.fromJson(v)).toList();
       } else {
@@ -87,23 +100,28 @@ class BibleRemoteDataSource {
       throw BibleApiException('Network error: $e');
     }
   }
-  
+
   /// Buscar versículos por palabra clave
   Future<List<VerseModel>> searchVerses(String query) async {
-    final url = Uri.parse(
-      '${ApiConstants.bibleApiBaseUrl}/search?query=$query&translation=$_currentTranslation'
-    );
-    
+    String urlString =
+        '${ApiConstants.bibleApiBaseUrl}/search?query=$query&translation=$_currentTranslation';
+
+    if (kIsWeb) {
+      urlString = 'https://corsproxy.io/?${Uri.encodeComponent(urlString)}';
+    }
+
+    final url = Uri.parse(urlString);
+
     try {
       final response = await client.get(url);
-      
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        
+
         if (json['error'] != null) {
           throw BibleApiException(json['error']);
         }
-        
+
         final results = json['results'] as List;
         return results.map((r) => VerseModel.fromJson(r)).toList();
       } else {
@@ -117,7 +135,7 @@ class BibleRemoteDataSource {
       throw BibleApiException('Network error: $e');
     }
   }
-  
+
   /// Obtener versículos de una categoría/emoción específica
   Future<List<VerseModel>> getVersesByCategory(String category) async {
     // Mapeo de categorías a versículos conocidos
@@ -170,7 +188,7 @@ class BibleRemoteDataSource {
         '1juan 4:18',
       ],
     };
-    
+
     final Map<String, List<String>> categoryVersesEn = {
       'psalms': [
         'psalms 23:1',
@@ -220,13 +238,14 @@ class BibleRemoteDataSource {
         '1john 4:18',
       ],
     };
-    
+
     // Seleccionar según idioma
-    final versesMap = _currentTranslation == 'nvi' ? categoryVersesEs : categoryVersesEn;
+    final versesMap =
+        _currentTranslation == 'nvi' ? categoryVersesEs : categoryVersesEn;
     final verses = versesMap[category.toLowerCase()] ?? versesMap['psalms']!;
-    
+
     final results = <VerseModel>[];
-    
+
     for (final ref in verses) {
       try {
         final verse = await getVerse(ref);
@@ -235,7 +254,7 @@ class BibleRemoteDataSource {
         continue;
       }
     }
-    
+
     return results;
   }
 }
