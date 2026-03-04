@@ -4,23 +4,23 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'emotion_selection_screen.dart';
 import 'main_layout.dart';
+import '../../core/theme/app_theme.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? const Color(0xFF191022) : const Color(0xFFFDFCFF);
-    final textColor =
-        isDark ? Colors.white : const Color(0xFF0F172A); // slate-900
+    final theme = Theme.of(context);
+    final bgColor = theme.scaffoldBackgroundColor;
+    final textColor = theme.colorScheme.onSurface;
 
     return Scaffold(
       backgroundColor: bgColor,
       body: Stack(
         children: [
           // Background ambient gradients
-          _buildAmbientBackground(isDark),
+          _buildAmbientBackground(theme),
 
           SafeArea(
             bottom: false,
@@ -33,13 +33,13 @@ class HomeScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildHeader(isDark, textColor),
+                        _buildHeader(theme, textColor),
                         const SizedBox(height: 24),
-                        _buildVerseOfDay(),
+                        _buildVerseOfDay(theme),
                         const SizedBox(height: 24),
-                        _buildQuickActions(context, isDark, textColor),
+                        _buildQuickActions(context, theme, textColor),
                         const SizedBox(height: 24),
-                        _buildDailyInspiration(isDark, textColor),
+                        _buildDailyInspiration(theme, textColor),
                         const SizedBox(height: 120), // Padding for bottom nav
                       ],
                     ),
@@ -53,7 +53,10 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAmbientBackground(bool isDark) {
+  Widget _buildAmbientBackground(ThemeData theme) {
+    final primary = theme.colorScheme.primary;
+    final isDark = theme.brightness == Brightness.dark;
+
     return Stack(
       children: [
         Positioned(
@@ -64,9 +67,7 @@ class HomeScreen extends StatelessWidget {
             height: 300,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isDark
-                  ? const Color(0xFFE9D5FF).withOpacity(0.1)
-                  : const Color(0xFFE9D5FF).withOpacity(0.4),
+              color: primary.withValues(alpha: isDark ? 0.15 : 0.25),
             ),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
@@ -82,9 +83,7 @@ class HomeScreen extends StatelessWidget {
             height: 250,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isDark
-                  ? const Color(0xFFDBEAFE).withOpacity(0.1)
-                  : const Color(0xFFDBEAFE).withOpacity(0.4),
+              color: Colors.blueAccent.withValues(alpha: isDark ? 0.10 : 0.15),
             ),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
@@ -100,9 +99,7 @@ class HomeScreen extends StatelessWidget {
             height: 350,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isDark
-                  ? const Color(0xFFFFF7ED).withOpacity(0.05)
-                  : const Color(0xFFFFF7ED).withOpacity(0.5),
+              color: Colors.amber.withValues(alpha: isDark ? 0.05 : 0.10),
             ),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
@@ -114,7 +111,10 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(bool isDark, Color textColor) {
+  Widget _buildHeader(ThemeData theme, Color textColor) {
+    final textMuted = theme.textTheme.bodyMedium?.color ?? Colors.grey;
+    final glassExt = theme.extension<GlassThemeExtension>();
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
@@ -130,7 +130,9 @@ class HomeScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                          color: Colors.white.withOpacity(0.5), width: 2),
+                          color: glassExt?.glassBorderColor ??
+                              Colors.white.withValues(alpha: 0.1),
+                          width: 2),
                       image: const DecorationImage(
                         image: NetworkImage(
                             'https://lh3.googleusercontent.com/aida-public/AB6AXuBjU32bkOlDqiBqhTl8ODupkOA-GVuu3FQQGug_yxEcxkvqHg2AijOAJi1-O4FX-O3LhCN8IR3e63O_HGaSGxFqfLy5_OCYI7UXoQ4ykX7sFnOYHmpu3ISQnT0BUJ6TepyTscB7OhHOHkZQZwMdUdS0v6zNar5FGLgJduSERqq2LwnLFAC5-5WzarsvR5W0IL-pP3Xd-8EMi-fIKj0I39d5z9FeKdTWFqoCCpYSCKR0RMZhJ8CSHYL7at0oPpFcQwpDwm4wZ-j9HA'),
@@ -147,7 +149,8 @@ class HomeScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.greenAccent[400],
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(
+                            color: theme.scaffoldBackgroundColor, width: 2),
                       ),
                     ),
                   ),
@@ -162,7 +165,7 @@ class HomeScreen extends StatelessWidget {
                     style: GoogleFonts.manrope(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF64748B),
+                      color: textMuted,
                       letterSpacing: 1.2,
                     ),
                   ),
@@ -183,39 +186,37 @@ class HomeScreen extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isDark
-                  ? Colors.white.withOpacity(0.1)
-                  : Colors.white.withOpacity(0.5),
+              color: glassExt?.glassBgColor ?? theme.colorScheme.surface,
               border: Border.all(
-                  color: isDark
-                      ? Colors.white.withOpacity(0.1)
-                      : Colors.white.withOpacity(0.6)),
+                  color: glassExt?.glassBorderColor ?? Colors.transparent),
             ),
-            child: const Icon(Icons.notifications_outlined,
-                color: Color(0xFF7F13EC)),
+            child: Icon(Icons.notifications_outlined,
+                color: theme.colorScheme.primary),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildVerseOfDay() {
+  Widget _buildVerseOfDay(ThemeData theme) {
+    final primary = theme.colorScheme.primary;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xE67F13EC),
-            Color(0xFF9333EA)
-          ], // primary/90 to purple-600
+            primary.withValues(alpha: 0.9),
+            primary.withValues(alpha: 1.0),
+          ],
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF7F13EC).withOpacity(0.3),
+            color: primary.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -227,7 +228,7 @@ class HomeScreen extends StatelessWidget {
             top: -20,
             right: -20,
             child: Icon(Icons.format_quote,
-                size: 120, color: Colors.white.withOpacity(0.1)),
+                size: 120, color: Colors.white.withValues(alpha: 0.1)),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,9 +237,10 @@ class HomeScreen extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  border:
+                      Border.all(color: Colors.white.withValues(alpha: 0.1)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -274,7 +276,7 @@ class HomeScreen extends StatelessWidget {
                 style: GoogleFonts.manrope(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: const Color(0xFFF3E8FF).withOpacity(0.9), // purple-100
+                  color: Colors.white.withValues(alpha: 0.9),
                 ),
               ),
               const SizedBox(height: 16),
@@ -297,7 +299,7 @@ class HomeScreen extends StatelessWidget {
       width: 32,
       height: 32,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withValues(alpha: 0.2),
         shape: BoxShape.circle,
       ),
       child: Icon(icon, color: Colors.white, size: 18),
@@ -305,7 +307,10 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildQuickActions(
-      BuildContext context, bool isDark, Color textColor) {
+      BuildContext context, ThemeData theme, Color textColor) {
+    final primary = theme.colorScheme.primary;
+    final isDark = theme.brightness == Brightness.dark;
+
     return Column(
       children: [
         Row(
@@ -324,21 +329,20 @@ class HomeScreen extends StatelessWidget {
               style: GoogleFonts.manrope(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF7F13EC),
+                color: primary,
               ),
             ),
           ],
         ),
         const SizedBox(height: 16),
         _buildActionCard(
-          isDark: isDark,
-          textColor: textColor,
+          theme: theme,
           gradientColors: [
             const Color(0xFFEC4899),
             const Color(0xFFFB7185)
           ], // pink-500 to rose-400
           iconBgColor: isDark
-              ? const Color(0x33831843)
+              ? const Color(0xFFEC4899).withValues(alpha: 0.2)
               : const Color(0xFFFDF2F8), // pink-900/20 : pink-50
           iconColor: const Color(0xFFEC4899), // pink-500
           icon: Icons.monitor_heart_outlined,
@@ -357,14 +361,13 @@ class HomeScreen extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         _buildActionCard(
-          isDark: isDark,
-          textColor: textColor,
+          theme: theme,
           gradientColors: [
             const Color(0xFF3B82F6),
             const Color(0xFF22D3EE)
           ], // blue-500 to cyan-400
           iconBgColor: isDark
-              ? const Color(0x331E3A8A)
+              ? const Color(0xFF3B82F6).withValues(alpha: 0.2)
               : const Color(0xFFEFF6FF), // blue-900/20 : blue-50
           iconColor: const Color(0xFF3B82F6), // blue-500
           icon: Icons.menu_book_outlined,
@@ -378,14 +381,14 @@ class HomeScreen extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         _buildActionCard(
-          isDark: isDark,
-          textColor: textColor,
+          theme: theme,
           gradientColors: [
             const Color(0xFFFBBF24),
             const Color(0xFFF97316)
           ], // amber-400 to orange-500
-          iconBgColor:
-              isDark ? const Color(0x337C2D12) : const Color(0xFFFFF7ED),
+          iconBgColor: isDark
+              ? const Color(0xFFF97316).withValues(alpha: 0.2)
+              : const Color(0xFFFFF7ED),
           iconColor: const Color(0xFFF97316), // orange-500
           icon: Icons.map_outlined,
           title: 'Mapa de Oraciones',
@@ -402,8 +405,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildActionCard({
-    required bool isDark,
-    required Color textColor,
+    required ThemeData theme,
     required List<Color> gradientColors,
     required Color iconBgColor,
     required Color iconColor,
@@ -414,18 +416,20 @@ class HomeScreen extends StatelessWidget {
     bool hasMapPreview = false,
     VoidCallback? onTap,
   }) {
+    final glassExt = theme.extension<GlassThemeExtension>();
+    final isDark = theme.brightness == Brightness.dark;
+
     return GestureDetector(
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1E293B) : Colors.white,
+            color: glassExt?.glassBgColor ?? theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-                color:
-                    isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9)),
+                color: glassExt?.glassBorderColor ?? Colors.transparent),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 20,
                 offset: const Offset(0, 4),
               ),
@@ -458,15 +462,20 @@ class HomeScreen extends StatelessWidget {
                       height: 96,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5F9),
+                        color: theme.colorScheme.surfaceContainerHighest,
                         borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(16),
                             topRight: Radius.circular(16)),
-                        image: const DecorationImage(
-                          image:
-                              NetworkImage('https://placeholder.pics/svg/300'),
+                        image: DecorationImage(
+                          image: const NetworkImage(
+                              'https://placeholder.pics/svg/300'),
                           fit: BoxFit.cover,
-                          opacity: 0.6,
+                          colorFilter: isDark
+                              ? ColorFilter.mode(
+                                  Colors.black.withValues(alpha: 0.5),
+                                  BlendMode.darken)
+                              : null,
+                          opacity: isDark ? 0.3 : 0.6,
                         ),
                       ),
                       child: Stack(
@@ -477,12 +486,11 @@ class HomeScreen extends StatelessWidget {
                                 begin: Alignment.bottomCenter,
                                 end: Alignment.topCenter,
                                 colors: [
-                                  isDark
-                                      ? const Color(0xFF1E293B)
-                                      : Colors.white,
-                                  isDark
-                                      ? const Color(0x661E293B)
-                                      : Colors.white.withOpacity(0.4),
+                                  glassExt?.glassBgColor ??
+                                      theme.colorScheme.surface,
+                                  (glassExt?.glassBgColor ??
+                                          theme.colorScheme.surface)
+                                      .withValues(alpha: 0.4),
                                   Colors.transparent,
                                 ],
                               ),
@@ -514,7 +522,9 @@ class HomeScreen extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.9),
+                                    color: theme.brightness == Brightness.dark
+                                        ? const Color(0xFF102217)
+                                        : Colors.white.withValues(alpha: 0.9),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
@@ -522,7 +532,7 @@ class HomeScreen extends StatelessWidget {
                                     style: GoogleFonts.manrope(
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
-                                      color: const Color(0xFF1E293B),
+                                      color: theme.colorScheme.onSurface,
                                     ),
                                   ),
                                 ),
@@ -558,18 +568,15 @@ class HomeScreen extends StatelessWidget {
                             children: [
                               Text(
                                 title,
-                                style: GoogleFonts.outfit(
-                                  fontSize: 18,
+                                style: theme.textTheme.titleLarge?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: textColor,
+                                  fontFamily: GoogleFonts.outfit().fontFamily,
                                 ),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 description,
-                                style: GoogleFonts.manrope(
-                                  fontSize: 14,
-                                  color: const Color(0xFF64748B),
+                                style: theme.textTheme.bodyMedium?.copyWith(
                                   height: 1.4,
                                 ),
                               ),
@@ -606,16 +613,17 @@ class HomeScreen extends StatelessWidget {
         ));
   }
 
-  Widget _buildDailyInspiration(bool isDark, Color textColor) {
+  Widget _buildDailyInspiration(ThemeData theme, Color textColor) {
+    final primary = theme.colorScheme.primary;
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark
-            ? const Color(0xFF4C1D95).withOpacity(0.1)
-            : const Color(0xFFF5F3FF),
+        color: primary.withValues(alpha: isDark ? 0.1 : 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-            color: isDark ? const Color(0xFF5B21B6) : const Color(0xFFEDE9FE)),
+        border:
+            Border.all(color: primary.withValues(alpha: isDark ? 0.3 : 0.1)),
       ),
       child: Row(
         children: [
@@ -638,34 +646,29 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Text(
                   'Devocional Matutino',
-                  style: GoogleFonts.outfit(
-                    fontSize: 14,
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: textColor,
+                    fontFamily: GoogleFonts.outfit().fontFamily,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Comienza tu día con gratitud y propósito. Escucha la reflexión de hoy.',
-                  style: GoogleFonts.manrope(
-                    fontSize: 12,
-                    color: const Color(0xFF64748B),
-                  ),
+                  style: theme.textTheme.bodySmall,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Icon(Icons.play_circle_outline,
-                        color: Color(0xFF7F13EC), size: 14),
+                    Icon(Icons.play_circle_outline, color: primary, size: 14),
                     const SizedBox(width: 4),
                     Text(
                       'REPRODUCIR (5 MIN)',
                       style: GoogleFonts.manrope(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFF7F13EC),
+                        color: primary,
                         letterSpacing: 0.5,
                       ),
                     ),

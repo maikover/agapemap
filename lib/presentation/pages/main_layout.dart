@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../pages/home_screen.dart';
-
 import '../pages/map_screen.dart';
 import '../pages/diary_screen.dart';
 import '../pages/favorites_screen.dart';
+import '../pages/profile_screen.dart';
+import '../../core/theme/app_theme.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -30,14 +31,16 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final glassExt = theme.extension<GlassThemeExtension>();
 
     final pages = [
       const HomeScreen(),
       const MapScreen(),
       const DiaryScreen(),
       const FavoritesScreen(),
-      const Scaffold(body: Center(child: Text('Perfil'))),
+      const ProfileScreen(),
     ];
 
     return Scaffold(
@@ -46,21 +49,18 @@ class _MainLayoutState extends State<MainLayout> {
         index: _currentIndex,
         children: pages,
       ),
-      bottomNavigationBar: _buildTailwindBottomNav(isDark),
+      bottomNavigationBar: _buildTailwindBottomNav(theme, isDark, glassExt),
     );
   }
 
-  Widget _buildTailwindBottomNav(bool isDark) {
+  Widget _buildTailwindBottomNav(
+      ThemeData theme, bool isDark, GlassThemeExtension? glassExt) {
     return Container(
       decoration: BoxDecoration(
-        color: isDark
-            ? const Color(0xFF191022).withOpacity(0.65)
-            : Colors.white.withOpacity(0.65),
+        color: glassExt?.glassBgColor ?? theme.colorScheme.surface,
         border: Border(
           top: BorderSide(
-            color: isDark
-                ? Colors.white.withOpacity(0.1)
-                : Colors.white.withOpacity(0.5),
+            color: glassExt?.glassBorderColor ?? Colors.transparent,
             width: 1,
           ),
         ),
@@ -71,8 +71,8 @@ class _MainLayoutState extends State<MainLayout> {
           child: SafeArea(
             bottom: true,
             child: Container(
-              height: 64,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding:
+                  const EdgeInsets.only(left: 12, right: 12, top: 8, bottom: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -82,30 +82,30 @@ class _MainLayoutState extends State<MainLayout> {
                     icon: Icons.home_rounded, // or FontAwesomeIcons.house
                     label: 'Inicio',
                     isActive: _currentIndex == 0,
-                    isDark: isDark,
+                    theme: theme,
                   ),
                   _buildNavItem(
                     index: 1,
                     icon: Icons.map_outlined,
                     label: 'Mapa',
                     isActive: _currentIndex == 1,
-                    isDark: isDark,
+                    theme: theme,
                   ),
                   // FAB Central
-                  _buildFAB(),
+                  _buildFAB(theme),
                   _buildNavItem(
                     index: 3,
                     icon: Icons.favorite_border_rounded,
                     label: 'Favoritos',
                     isActive: _currentIndex == 3,
-                    isDark: isDark,
+                    theme: theme,
                   ),
                   _buildNavItem(
                     index: 4,
                     icon: Icons.person_rounded,
                     label: 'Perfil',
                     isActive: _currentIndex == 4,
-                    isDark: isDark,
+                    theme: theme,
                   ),
                 ],
               ),
@@ -121,11 +121,13 @@ class _MainLayoutState extends State<MainLayout> {
     required IconData icon,
     required String label,
     required bool isActive,
-    required bool isDark,
+    required ThemeData theme,
   }) {
     final color = isActive
-        ? const Color(0xFF7F13EC)
-        : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8));
+        ? theme.colorScheme.primary
+        : (theme.brightness == Brightness.dark
+            ? const Color(0xFF64748B)
+            : const Color(0xFF94A3B8));
 
     return GestureDetector(
       onTap: () {
@@ -135,20 +137,20 @@ class _MainLayoutState extends State<MainLayout> {
       },
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
-        width: 60,
+        width: 64,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              height: 32,
-              width: 48,
+              height: 36,
+              width: 56,
               decoration: BoxDecoration(
                 color: isActive
-                    ? const Color(0xFF7F13EC).withOpacity(0.1)
+                    ? theme.colorScheme.primary.withValues(alpha: 0.1)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Icon(icon, color: color, size: 24),
+              child: Icon(icon, color: color, size: 26),
             ),
             const SizedBox(height: 2),
             Text(
@@ -166,7 +168,10 @@ class _MainLayoutState extends State<MainLayout> {
     );
   }
 
-  Widget _buildFAB() {
+  Widget _buildFAB(ThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.colorScheme.primary;
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -174,41 +179,40 @@ class _MainLayoutState extends State<MainLayout> {
         });
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 24), // pull it up
+        padding: const EdgeInsets.only(bottom: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
-              width: 48,
-              height: 48,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF1152d4).withOpacity(0.1),
+                color: primaryColor.withValues(alpha: 0.1),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF1152d4).withOpacity(0.2),
+                    color: primaryColor.withValues(alpha: 0.2),
                     blurRadius: 15,
                     spreadRadius: 2,
                     offset: const Offset(0, 5),
                   ),
                 ],
                 border: Border.all(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? const Color(0xFF1a2230)
-                      : Colors.white,
+                  color: isDark ? const Color(0xFF1a2230) : Colors.white,
                   width: 4,
                 ),
               ),
-              child: const Icon(Icons.menu_book_rounded,
-                  color: Color(0xFF1152d4), size: 24),
+              child:
+                  Icon(Icons.menu_book_rounded, color: primaryColor, size: 28),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Text(
               'Diario',
               style: GoogleFonts.manrope(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF1152d4),
+                color: primaryColor,
                 letterSpacing: 0.5,
               ),
             ),

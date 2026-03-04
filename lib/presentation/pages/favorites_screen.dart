@@ -8,6 +8,7 @@ import '../../core/utils/l10n_helper.dart';
 import '../../domain/entities/emotion.dart';
 import '../../domain/entities/saved_verse.dart';
 import '../../domain/usecases/diary_usecases.dart';
+import '../../core/theme/app_theme.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -59,11 +60,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+    final bgColor = theme.scaffoldBackgroundColor;
+
     if (_isLoading) {
-      return const Scaffold(
-        backgroundColor: Color(0xFF0a120d),
+      return Scaffold(
+        backgroundColor: bgColor,
         body: Center(
-          child: CircularProgressIndicator(color: Color(0xFF25f47b)),
+          child: CircularProgressIndicator(color: primaryColor),
         ),
       );
     }
@@ -71,23 +76,24 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     final l10n = context.l10n;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0a120d),
+      backgroundColor: bgColor,
       // No extendBodyBehindAppBar so filters sit cleanly at top
       body: SafeArea(
         bottom: false,
         child: Column(
           children: [
-            _buildGlassHeader(),
-            _buildFilters(l10n),
+            _buildGlassHeader(theme),
+            _buildFilters(l10n, theme),
             Expanded(
               child: _filteredVerses.isEmpty
-                  ? _buildEmptyState(l10n)
+                  ? _buildEmptyState(l10n, theme)
                   : ListView.builder(
                       padding: const EdgeInsets.only(
                           top: 16, bottom: 120, left: 24, right: 24),
                       itemCount: _filteredVerses.length,
                       itemBuilder: (context, index) {
-                        return _buildFavoriteCard(_filteredVerses[index], l10n);
+                        return _buildFavoriteCard(
+                            _filteredVerses[index], l10n, theme);
                       },
                     ),
             ),
@@ -97,13 +103,16 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  Widget _buildGlassHeader() {
+  Widget _buildGlassHeader(ThemeData theme) {
+    final glassExt = theme.extension<GlassThemeExtension>();
+    final primaryColor = theme.colorScheme.primary;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       decoration: BoxDecoration(
-        color: const Color(0xFF102217).withOpacity(0.7),
+        color: glassExt?.glassBgColor ?? theme.colorScheme.surface,
         border: Border(
-          bottom: BorderSide(color: const Color(0xFF25f47b).withOpacity(0.1)),
+          bottom: BorderSide(color: primaryColor.withOpacity(0.1)),
         ),
       ),
       child: ClipRRect(
@@ -115,7 +124,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               Text(
                 'Tus Oraciones Favoritas',
                 style: GoogleFonts.manrope(
-                  color: Colors.white,
+                  color: theme.colorScheme.onSurface,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   letterSpacing: -0.5,
@@ -126,7 +135,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 height: 40,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFF25f47b), width: 2),
+                  border: Border.all(color: primaryColor, width: 2),
                   image: const DecorationImage(
                     image: NetworkImage(
                         'https://lh3.googleusercontent.com/aida-public/AB6AXuCmhqTPfYWLRu4wrqmIyJRridGSVItLpKIPmeGu78EvSm9dBJYwQiIhE4INTvn5pkXL2DaTYHENmXHBCge1-bcJRhIqIsQ70-o7WpLzHSfdDAFhQA-fahLdvgRWL_fPLo8PJBtXBINnTjA6b3NTrmrhNJALyF8sJ5MJ3T_x9MwgVx-Yv-FuZvAwNwq_YkQ8PgyVBNBDAOOyOdBHqMYsMWkZWuuiZjNOrzH6LQ_o_ajdZvkug3bq6AanQjZcOMSRfENHV2bQotApeA'),
@@ -141,7 +150,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  Widget _buildFilters(AppLocalizations l10n) {
+  Widget _buildFilters(AppLocalizations l10n, ThemeData theme) {
     // Collect active emotions from existing verses
     final activeEmotionsId =
         _savedVerses.map((v) => v.emotionId).toSet().toList();
@@ -156,8 +165,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           _buildFilterChip(
             id: 'all',
             label: 'Todas',
-            color: const Color(0xFF25f47b),
+            color: theme.colorScheme.primary,
             isSelected: _selectedFilter == 'all',
+            theme: theme,
           ),
           ...activeEmotionsId.map((id) {
             final emotion = Emotions.getById(id);
@@ -166,6 +176,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               label: emotion.getName(l10n),
               color: emotion.color,
               isSelected: _selectedFilter == id,
+              theme: theme,
             );
           }),
         ],
@@ -178,7 +189,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     required String label,
     required Color color,
     required bool isSelected,
+    required ThemeData theme,
   }) {
+    final isDark = theme.brightness == Brightness.dark;
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -192,17 +205,25 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         decoration: BoxDecoration(
           color: isSelected
               ? color.withOpacity(0.2)
-              : Colors.white.withOpacity(0.05),
+              : (isDark
+                  ? Colors.white.withOpacity(0.05)
+                  : Colors.black.withOpacity(0.05)),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: isSelected ? color : Colors.white.withOpacity(0.1),
+            color: isSelected
+                ? color
+                : (isDark
+                    ? Colors.white.withOpacity(0.1)
+                    : Colors.black.withOpacity(0.1)),
             width: isSelected ? 1.5 : 1,
           ),
         ),
         child: Text(
           label,
           style: GoogleFonts.manrope(
-            color: isSelected ? color : Colors.white60,
+            color: isSelected
+                ? color
+                : theme.colorScheme.onSurface.withOpacity(0.6),
             fontSize: 14,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
           ),
@@ -211,14 +232,18 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  Widget _buildFavoriteCard(SavedVerse verse, AppLocalizations l10n) {
+  Widget _buildFavoriteCard(
+      SavedVerse verse, AppLocalizations l10n, ThemeData theme) {
     final emotion = Emotions.getById(verse.emotionId);
     final color = emotion.color;
+    final glassExt = theme.extension<GlassThemeExtension>();
+    final textColor = theme.colorScheme.onSurface;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF102217).withOpacity(0.4),
+        color: glassExt?.glassBgColor ?? theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withOpacity(0.3)),
         boxShadow: [
@@ -255,7 +280,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                         Text(
                           verse.reference,
                           style: GoogleFonts.manrope(
-                            color: Colors.white,
+                            color: textColor,
                             fontSize: 18,
                             fontWeight: FontWeight.w800,
                           ),
@@ -266,9 +291,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       onTap: () => _removeFavorite(verse.id),
                       child: Container(
                         padding: const EdgeInsets.all(8),
-                        child: const Icon(
+                        child: Icon(
                           Icons.favorite,
-                          color: Color(0xFF25f47b),
+                          color: theme.colorScheme.primary,
                           size: 24,
                         ),
                       ),
@@ -279,7 +304,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 Text(
                   '"${verse.text}"',
                   style: GoogleFonts.manrope(
-                    color: Colors.white70,
+                    color: textColor.withOpacity(0.7),
                     fontSize: 15,
                     height: 1.5,
                   ),
@@ -290,13 +315,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
+                      color: isDark
+                          ? Colors.white.withOpacity(0.05)
+                          : Colors.black.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       verse.note!,
                       style: GoogleFonts.manrope(
-                        color: Colors.white54,
+                        color: textColor.withOpacity(0.54),
                         fontSize: 13,
                         fontStyle: FontStyle.italic,
                       ),
@@ -311,18 +338,20 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  Widget _buildEmptyState(AppLocalizations l10n) {
+  Widget _buildEmptyState(AppLocalizations l10n, ThemeData theme) {
+    final textColor = theme.colorScheme.onSurface;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.favorite_border,
-              size: 60, color: Colors.white.withOpacity(0.2)),
+              size: 60, color: textColor.withOpacity(0.2)),
           const SizedBox(height: 16),
           Text(
             'Aún no hay favoritos',
             style: GoogleFonts.manrope(
-              color: Colors.white.withOpacity(0.8),
+              color: textColor.withOpacity(0.8),
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -332,7 +361,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             'Guarda oraciones o versículos\npara verlos aquí.',
             textAlign: TextAlign.center,
             style: GoogleFonts.manrope(
-              color: Colors.white.withOpacity(0.5),
+              color: textColor.withOpacity(0.5),
               fontSize: 14,
             ),
           ),

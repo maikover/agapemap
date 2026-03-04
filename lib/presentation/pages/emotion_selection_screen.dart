@@ -9,6 +9,8 @@ import '../../domain/entities/emotion.dart';
 import '../../domain/usecases/get_random_verse_for_emotion.dart';
 import '../../domain/entities/verse.dart';
 import 'verse_swipe_screen.dart';
+import '../../core/theme/app_theme.dart';
+import '../widgets/custom_back_button.dart';
 
 class EmotionSelectionScreen extends StatefulWidget {
   const EmotionSelectionScreen({super.key});
@@ -83,15 +85,13 @@ class _EmotionSelectionScreenState extends State<EmotionSelectionScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    // Tailwind Colors Mapping
-    final primaryColor = const Color(0xFF135bec);
-    final bgColor = isDark ? const Color(0xFF101622) : const Color(0xFFf6f6f8);
-    final textColor =
-        isDark ? const Color(0xFFf1f5f9) : const Color(0xFF0f172a);
-    final textMuted =
-        isDark ? const Color(0xFF94a3b8) : const Color(0xFF64748b);
+    final primaryColor = theme.colorScheme.primary;
+    final bgColor = theme.scaffoldBackgroundColor;
+    final textColor = theme.colorScheme.onSurface;
+    final textMuted = theme.textTheme.bodyMedium?.color ?? Colors.grey;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -143,55 +143,11 @@ class _EmotionSelectionScreenState extends State<EmotionSelectionScreen>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (Navigator.canPop(context)) {
-                            Navigator.pop(context);
-                          }
-                        },
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: isDark
-                                ? Colors.white.withOpacity(0.0)
-                                : Colors.black.withOpacity(0.0),
-                          ),
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: textColor,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        'AgapeMap',
-                        style: GoogleFonts.manrope(
-                          color: textColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              color: isDark
-                                  ? Colors.white.withOpacity(0.1)
-                                  : Colors.black.withOpacity(0.1)),
-                          image: const DecorationImage(
-                            image: NetworkImage(
-                                'https://lh3.googleusercontent.com/aida-public/AB6AXuDvVLiz7qLOabJGbItzFzjrPumvWWASG1QU3kz_LGF-QhxvIPL4fgILo03dkoU_nUC9x8zOS80SlblEZD13iWafCsFG9DUXEsNXIRPU7V5IwU8y8YasaIe9pHny0d0hSh7FTvGWeSggqBIjjEktusmq3e3dwDn73LqkMykJ40l-Y5elGLZe0HSfu5Zgiw8l0S6Hbny2Wdp_469j5kE1KH7mB-FWyeYf5KVr1OPFdianl_atnd8jQUovIHx8sYqFyrgspfbtmXMtRQ'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
+                      // Solo mantenemos el botón de volver si es que vinieron de otra pantalla.
+                      // Se eliminó el título AgapeMap y el icono de foto circular a petición del usuario.
+                      CustomBackButton(color: textColor),
                     ],
                   ),
                 ),
@@ -276,6 +232,7 @@ class _EmotionSelectionScreenState extends State<EmotionSelectionScreen>
                             isDark: isDark,
                             textColor: textColor,
                             l10n: l10n,
+                            theme: theme,
                           );
                         },
                       ),
@@ -369,14 +326,11 @@ class _EmotionSelectionScreenState extends State<EmotionSelectionScreen>
     required bool isDark,
     required Color textColor,
     required AppLocalizations l10n,
+    required ThemeData theme,
   }) {
-    // Glassmorphism default properties
-    final defaultBg = isDark
-        ? const Color(0xFF1c2433).withOpacity(0.4)
-        : Colors.white.withOpacity(0.6);
-    final defaultBorder = isDark
-        ? Colors.white.withOpacity(0.05)
-        : Colors.black.withOpacity(0.03);
+    final glassExt = theme.extension<GlassThemeExtension>();
+    final defaultBg = glassExt?.glassBgColor ?? theme.colorScheme.surface;
+    final defaultBorder = glassExt?.glassBorderColor ?? Colors.transparent;
 
     return InkWell(
       onTap: () => _selectEmotionAndContinue(emotion.id),

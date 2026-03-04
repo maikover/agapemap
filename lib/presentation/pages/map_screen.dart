@@ -9,6 +9,7 @@ import '../../domain/entities/emotion.dart';
 import '../../domain/entities/prayer_location.dart';
 import '../../domain/usecases/prayer_usecases.dart';
 import '../../core/utils/location_service.dart';
+import '../../core/theme/app_theme.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -44,7 +45,7 @@ class _MapScreenState extends State<MapScreen>
   }
 
   Future<void> _initLocation() async {
-    setState(() => _isLoading = true);
+    if (mounted) setState(() => _isLoading = true);
 
     final locationService = GetIt.instance<LocationService>();
     _hasLocationPermission = await locationService.requestPermission();
@@ -81,23 +82,28 @@ class _MapScreenState extends State<MapScreen>
       // Silently fail
     }
 
-    setState(() => _isLoading = false);
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     if (_isLoading) {
-      return const Scaffold(
-        backgroundColor: Color(0xFF0a120d),
+      return Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: Center(
-          child: CircularProgressIndicator(color: Color(0xFF25f47b)),
+          child: CircularProgressIndicator(color: theme.colorScheme.primary),
         ),
       );
     }
 
     if (!_hasLocationPermission) {
       return Scaffold(
-        backgroundColor: const Color(0xFF0a120d),
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: _buildPermissionRequest(),
       );
     }
@@ -105,7 +111,7 @@ class _MapScreenState extends State<MapScreen>
     final l10n = context.l10n;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0a120d),
+      backgroundColor: theme.scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
@@ -116,7 +122,8 @@ class _MapScreenState extends State<MapScreen>
               child: Image.network(
                 'https://lh3.googleusercontent.com/aida-public/AB6AXuBCyAwEYCxht_zOyJw0qi2LEwpQ7TvcvkIIe7fL12LmsBYbRUkcGXD4oh1Z09Ubo3Icqm1NGX_gU6YG5TtaBwG8fDDMFyewMStLrYys4x6YysVInAeJro9eV7B0Oy8wlVd_B9ib58xz6oXDkGQOWR-WbTUWtpG8S6BUXeXzaS23NHyAkTN-HOBuVRt_KnW7j8Z601bCx4v2b2yF5pVbpUr-osxMoED_4ZkjfqIBWzrplP5aGzq5ck_7HQ-npw_5dhmG2Iuijl6X7A',
                 fit: BoxFit.cover,
-                colorBlendMode: BlendMode.saturation,
+                colorBlendMode:
+                    isDark ? BlendMode.saturation : BlendMode.darken,
               ),
             ),
           ),
@@ -175,6 +182,9 @@ class _MapScreenState extends State<MapScreen>
   }
 
   Widget _buildTopHeader() {
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: Row(
@@ -186,7 +196,7 @@ class _MapScreenState extends State<MapScreen>
               Text(
                 'AgapeMap',
                 style: GoogleFonts.manrope(
-                  color: Colors.white,
+                  color: theme.colorScheme.onSurface,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   letterSpacing: -0.5,
@@ -195,7 +205,7 @@ class _MapScreenState extends State<MapScreen>
               Text(
                 'PREMIUM',
                 style: GoogleFonts.manrope(
-                  color: const Color(0xFF25f47b),
+                  color: primaryColor,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2.0,
@@ -213,8 +223,8 @@ class _MapScreenState extends State<MapScreen>
                 child: Container(
                   width: 8,
                   height: 8,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF25f47b),
+                  decoration: BoxDecoration(
+                    color: primaryColor,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -227,14 +237,20 @@ class _MapScreenState extends State<MapScreen>
   }
 
   Widget _buildSearchBar() {
+    final theme = Theme.of(context);
+    final glassExt = theme.extension<GlassThemeExtension>();
+    final primaryColor = theme.colorScheme.primary;
+    final textColor = theme.colorScheme.onSurface;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Container(
         height: 56,
         decoration: BoxDecoration(
-          color: const Color(0xFF102217).withOpacity(0.7),
+          color: glassExt?.glassBgColor ?? theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: const Color(0xFF25f47b).withOpacity(0.1)),
+          border: Border.all(
+              color: glassExt?.glassBorderColor ?? Colors.transparent),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.2),
@@ -251,16 +267,16 @@ class _MapScreenState extends State<MapScreen>
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                  Icon(Icons.search,
-                      color: const Color(0xFF25f47b).withOpacity(0.7)),
+                  Icon(Icons.search, color: primaryColor.withOpacity(0.7)),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: TextField(
                       style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w500),
+                          color: textColor, fontWeight: FontWeight.w500),
                       decoration: InputDecoration(
                         hintText: 'Buscar oraciones cercanas...',
-                        hintStyle: TextStyle(color: Colors.white54),
+                        hintStyle:
+                            TextStyle(color: theme.textTheme.bodyMedium?.color),
                         border: InputBorder.none,
                       ),
                     ),
@@ -275,6 +291,7 @@ class _MapScreenState extends State<MapScreen>
   }
 
   Widget _buildMapControls() {
+    final theme = Theme.of(context);
     return Positioned(
       right: 24,
       top: MediaQuery.of(context).size.height * 0.45,
@@ -285,21 +302,25 @@ class _MapScreenState extends State<MapScreen>
           _buildGlassIconButton(Icons.remove, size: 40),
           const SizedBox(height: 16),
           _buildGlassIconButton(Icons.near_me,
-              size: 40, iconColor: const Color(0xFF25f47b)),
+              size: 40, iconColor: theme.colorScheme.primary),
         ],
       ),
     );
   }
 
   Widget _buildGlassIconButton(IconData icon,
-      {double size = 48, Color iconColor = Colors.white}) {
+      {double size = 48, Color? iconColor}) {
+    final theme = Theme.of(context);
+    final glassExt = theme.extension<GlassThemeExtension>();
+
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: const Color(0xFF102217).withOpacity(0.7),
+        color: glassExt?.glassBgColor ?? theme.colorScheme.surface,
         shape: BoxShape.circle,
-        border: Border.all(color: const Color(0xFF25f47b).withOpacity(0.1)),
+        border:
+            Border.all(color: glassExt?.glassBorderColor ?? Colors.transparent),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
@@ -311,7 +332,7 @@ class _MapScreenState extends State<MapScreen>
         borderRadius: BorderRadius.circular(size / 2),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Icon(icon, color: iconColor),
+          child: Icon(icon, color: iconColor ?? theme.colorScheme.onSurface),
         ),
       ),
     );
@@ -377,17 +398,21 @@ class _MapScreenState extends State<MapScreen>
   }
 
   Widget _buildFAB(BuildContext context) {
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+    final onPrimary = theme.colorScheme.onPrimary;
+
     return GestureDetector(
       onTap: () => _showCreatePrayerSheet(context),
       child: Container(
         height: 64,
         padding: const EdgeInsets.symmetric(horizontal: 32),
         decoration: BoxDecoration(
-          color: const Color(0xFF25f47b), // vibrant green
+          color: primaryColor,
           borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF25f47b).withOpacity(0.4),
+              color: primaryColor.withOpacity(0.4),
               blurRadius: 30,
               offset: const Offset(0, 10),
             ),
@@ -397,12 +422,12 @@ class _MapScreenState extends State<MapScreen>
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.location_on, color: Color(0xFF0a120d)),
+            Icon(Icons.location_on, color: onPrimary),
             const SizedBox(width: 8),
             Text(
               'PLANTAR MI ORACIÓN',
               style: GoogleFonts.manrope(
-                color: const Color(0xFF0a120d),
+                color: onPrimary,
                 fontWeight: FontWeight.w800,
                 fontSize: 14,
                 letterSpacing: 1,
@@ -632,13 +657,19 @@ class _MapScreenState extends State<MapScreen>
   }
 
   Widget _buildEmptyStateOverlay(AppLocalizations l10n) {
+    final theme = Theme.of(context);
+    final glassExt = theme.extension<GlassThemeExtension>();
+    final primaryColor = theme.colorScheme.primary;
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: const Color(0xFF102217).withOpacity(0.7),
+        color: glassExt?.glassBgColor ?? theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border(
-            top: BorderSide(color: const Color(0xFF25f47b).withOpacity(0.2))),
+            top: BorderSide(
+                color: glassExt?.glassBorderColor ??
+                    primaryColor.withOpacity(0.2))),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.3),
@@ -662,7 +693,7 @@ class _MapScreenState extends State<MapScreen>
                 Text(
                   l10n.noPrayersNearby,
                   style: GoogleFonts.manrope(
-                    color: Colors.white,
+                    color: theme.colorScheme.onSurface,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -685,25 +716,30 @@ class _MapScreenState extends State<MapScreen>
   }
 
   Widget _buildPermissionRequest() {
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.location_off, size: 80, color: Colors.white54),
+            Icon(Icons.location_off,
+                size: 80, color: theme.colorScheme.onSurface.withOpacity(0.5)),
             const SizedBox(height: 16),
             Text(
               context.l10n.locationPermissionRequired,
-              style: GoogleFonts.manrope(fontSize: 18, color: Colors.white),
+              style: GoogleFonts.manrope(
+                  fontSize: 18, color: theme.colorScheme.onSurface),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: _initLocation,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF25f47b),
-                foregroundColor: const Color(0xFF0a120d),
+                backgroundColor: primaryColor,
+                foregroundColor: theme.colorScheme.onPrimary,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24)),
               ),

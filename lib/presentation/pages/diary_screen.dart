@@ -11,6 +11,8 @@ import '../../domain/entities/emotion.dart';
 import '../../domain/entities/saved_verse.dart';
 import '../../domain/entities/verse.dart';
 import '../../domain/usecases/diary_usecases.dart';
+import '../../core/theme/app_theme.dart';
+import '../widgets/custom_back_button.dart';
 
 class DiaryScreen extends StatefulWidget {
   const DiaryScreen({super.key});
@@ -98,16 +100,13 @@ class _DiaryScreenState extends State<DiaryScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Theme.of(context).brightness == Brightness.dark
-            ? const Color(0xFF1a2230)
-            : Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge)),
         title: Text(
           l10n.deleteConfirmation,
           style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black87,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         actions: [
@@ -138,17 +137,15 @@ class _DiaryScreenState extends State<DiaryScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final glassExt = theme.extension<GlassThemeExtension>();
 
-    // Tailwind Colors Mapping
-    final primaryColor = const Color(0xFF1152d4);
-    final bgColor = isDark ? const Color(0xFF101622) : const Color(0xFFf6f6f8);
-    final surfaceColor =
-        isDark ? const Color(0xFF1a2230) : const Color(0xFFffffff);
-    final textColor =
-        isDark ? const Color(0xFFf1f5f9) : const Color(0xFF0f172a);
-    final textMuted =
-        isDark ? const Color(0xFF94a3b8) : const Color(0xFF64748b);
+    final primaryColor = theme.colorScheme.primary;
+    final bgColor = theme.scaffoldBackgroundColor;
+    final surfaceColor = glassExt?.glassBgColor ?? theme.colorScheme.surface;
+    final textColor = theme.colorScheme.onSurface;
+    final textMuted = theme.textTheme.bodyMedium?.color ?? Colors.grey;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -196,41 +193,14 @@ class _DiaryScreenState extends State<DiaryScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              if (Navigator.canPop(context)) {
-                                Navigator.pop(context);
-                              }
-                            },
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: surfaceColor,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.arrow_back,
-                                color: isDark
-                                    ? const Color(0xFFcbd5e1)
-                                    : const Color(0xFF475569),
-                                size: 20,
-                              ),
-                            ),
-                          ),
+                          CustomBackButton(),
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
                             decoration: BoxDecoration(
                               color: surfaceColor,
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(
+                                  AppTheme.borderRadiusLarge),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.05),
@@ -362,7 +332,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       decoration: BoxDecoration(
         color: isActive ? primaryColor : surfaceColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
         border: isActive
             ? null
             : Border.all(
@@ -507,7 +477,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
         width: double.infinity,
         height: 320,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF1152d4).withOpacity(0.08),
@@ -517,7 +487,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
           child: Stack(
             children: [
               // Image Background
@@ -674,7 +644,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
           padding: const EdgeInsets.only(right: 24),
           decoration: BoxDecoration(
             color: Colors.redAccent.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
           ),
           child: const Icon(Icons.delete, color: Colors.redAccent),
         ),
@@ -685,7 +655,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
             color: isDark
                 ? const Color(0xFF1a2230).withOpacity(0.7)
                 : Colors.white.withOpacity(0.7),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
             border: Border.all(
               color: isDark
                   ? Colors.white.withOpacity(0.05)
@@ -700,7 +670,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
               child: Column(
@@ -756,9 +726,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                   Text(
                     '"${entry.text}"',
                     style: GoogleFonts.manrope(
-                      color: isDark
-                          ? const Color(0xFFcbd5e1)
-                          : const Color(0xFF475569),
+                      color: textColor.withOpacity(0.8),
                       fontSize: 15,
                       height: 1.5,
                     ),

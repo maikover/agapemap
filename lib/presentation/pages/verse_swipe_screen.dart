@@ -4,8 +4,10 @@ import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:agapemap/l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
-import '../../core/constants/app_colors.dart';
+
 import '../../core/utils/l10n_helper.dart';
+import '../../core/theme/app_theme.dart';
+import '../widgets/custom_back_button.dart';
 import '../../core/utils/share_service.dart';
 import '../../domain/entities/emotion.dart';
 import '../../domain/entities/verse.dart';
@@ -46,9 +48,9 @@ class _VerseSwipeScreenState extends State<VerseSwipeScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Navigator.canPop(context)
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
+            ? const Padding(
+                padding: EdgeInsets.only(left: 16.0, top: 6.0, bottom: 6.0),
+                child: CustomBackButton(color: Colors.white),
               )
             : null,
         centerTitle: true,
@@ -208,7 +210,7 @@ class _VerseSwipeScreenState extends State<VerseSwipeScreen> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
         border: Border.all(color: Colors.white.withOpacity(0.2)),
         boxShadow: [
           BoxShadow(
@@ -219,7 +221,7 @@ class _VerseSwipeScreenState extends State<VerseSwipeScreen> {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Padding(
@@ -377,18 +379,20 @@ class _VerseSwipeScreenState extends State<VerseSwipeScreen> {
 
   void _showCompletionDialog() {
     final l10n = context.l10n;
+    final theme = Theme.of(context);
 
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
         ),
+        elevation: 20,
         title: Text(
           l10n.youReceivedYourWord,
           textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: theme.colorScheme.onSurface),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -410,7 +414,7 @@ class _VerseSwipeScreenState extends State<VerseSwipeScreen> {
               l10n.thanksForReceiving,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
+                color: theme.textTheme.bodyMedium?.color,
               ),
             ),
           ],

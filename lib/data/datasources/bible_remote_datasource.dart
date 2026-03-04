@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../models/verse_model.dart';
 import '../../core/constants/api_constants.dart';
@@ -36,10 +35,11 @@ class BibleRemoteDataSource {
     String urlString =
         '${ApiConstants.bibleApiBaseUrl}/$reference?translation=$_currentTranslation';
 
-    // Bypass CORS for Web using a free proxy
-    if (kIsWeb) {
-      urlString = 'https://corsproxy.io/?${Uri.encodeComponent(urlString)}';
-    }
+    // Quitamos temporalmente o comentamos el uso de corsproxy.io
+    // la API de bible-api.com ya soporta CORS (*). corsproxy.io está devolviendo 403.
+    // if (kIsWeb) {
+    //   urlString = 'https://corsproxy.io/?${Uri.encodeComponent(urlString)}';
+    // }
 
     final url = Uri.parse(urlString);
 
@@ -71,9 +71,9 @@ class BibleRemoteDataSource {
     String urlString =
         '${ApiConstants.bibleApiBaseUrl}/$references?translation=$_currentTranslation';
 
-    if (kIsWeb) {
-      urlString = 'https://corsproxy.io/?${Uri.encodeComponent(urlString)}';
-    }
+    // if (kIsWeb) {
+    //   urlString = 'https://corsproxy.io/?${Uri.encodeComponent(urlString)}';
+    // }
 
     final url = Uri.parse(urlString);
 
@@ -106,9 +106,9 @@ class BibleRemoteDataSource {
     String urlString =
         '${ApiConstants.bibleApiBaseUrl}/search?query=$query&translation=$_currentTranslation';
 
-    if (kIsWeb) {
-      urlString = 'https://corsproxy.io/?${Uri.encodeComponent(urlString)}';
-    }
+    // if (kIsWeb) {
+    //   urlString = 'https://corsproxy.io/?${Uri.encodeComponent(urlString)}';
+    // }
 
     final url = Uri.parse(urlString);
 

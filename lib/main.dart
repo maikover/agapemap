@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:agapemap/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'core/theme/app_theme.dart';
+import 'core/providers/theme_provider.dart';
 import 'core/utils/locale_service.dart';
 import 'config/injection.dart';
 import 'presentation/pages/splash_screen.dart';
@@ -29,7 +31,12 @@ void main() async {
   // Inicializar dependencias
   await initDependencies();
 
-  runApp(const AgapeMapApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const AgapeMapApp(),
+    ),
+  );
 }
 
 class AgapeMapApp extends StatefulWidget {
@@ -55,21 +62,29 @@ class _AgapeMapAppState extends State<AgapeMapApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'AgapeMap',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
-      locale: _locale,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: LocaleService.supportedLocales,
-      home: const SplashScreen(),
-      routes: {
-        '/home': (context) => const MainLayout(),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'AgapeMap',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.getTheme(
+              isDark: false, primaryColor: themeProvider.primaryColor),
+          darkTheme: AppTheme.getTheme(
+              isDark: true, primaryColor: themeProvider.primaryColor),
+          themeMode: themeProvider.themeMode,
+          locale: _locale,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: LocaleService.supportedLocales,
+          home: const SplashScreen(),
+          routes: {
+            '/home': (context) => const MainLayout(),
+          },
+        );
       },
     );
   }
